@@ -20,12 +20,7 @@ class WindowClass(QMainWindow, from_class):
 
         self.ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 
-        # self.sensor = iot_Thread(self)
-        # self.sensor.daemon = True
-        # self.sensor.update.connect(self.updateSensor)
-        # self.sensor.start()
-
-        self.pushButton.clicked.connect(self.btnClicked)
+        self.btnLed.clicked.connect(self.btnClicked)
 
         self.crossing_data = iot_Thread(self)
         self.crossing_data.daemon = True
@@ -34,12 +29,52 @@ class WindowClass(QMainWindow, from_class):
 
         self.ser.write(f"{self.led}\n".encode())
 
+        self.camera = iot_Thread(self)
+        self.camera.daemon = True
+        self.camera.update.connect(self.updateCamera)
+        self.btnCamera.clicked.connect(self.clickCamera)
+
+    def clickCamera(self):
+        if self.isCameraOn == False:
+            self.btnCamera.setText('Camera Off')
+            self.isCameraOn = True
+            self.cameraStart()
+        else :
+            self.btnCamera.setText('Camera On')
+            self.isCameraOn = False
+            self.cameraStop()
+
+    def cameraStart(self):
+        self.camera.running = True
+        self.camera.start()
+        self.video = cv2.VideoCapture(-1)
+
+    def cameraStop(self):
+        self.camera.running = False
+        self.count = 0
+        self.video.release()
+
+        if self.isRecStart == True:
+            self.writer.release()
+
+    def updateCamera(self):
+        retval, self.frame = self.video.read()
+        if retval:
+            self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)  
+
+            h, w, c, = self.frame.shape
+            self.qimage = QImage(self.frame.data, w, h, w*c, QImage.Format_RGB888)
+
+            self.pixmap = self.pixmap.fromImage(self.qimage)
+            self.pixmap = self.pixmap.scaled(self.label.width(), self.label.height())
+
+            self.printCamera.setPixmap(self.pixmap)
+
     def updateData(self):
         if self.dataFlow == 1:
             if self.ser.in_waiting:
-                self.label.setText(self.ser.readline().decode())
+                self.lightSensor.setText(self.ser.readline().decode())
                 self.dataFlow *= -1
-                # print(self.led , self.ser.readline().decode())
         elif self.dataFlow == -1:
             self.dataFlow *= -1
             self.ser.write(f"{self.led}\n".encode())
@@ -49,12 +84,6 @@ class WindowClass(QMainWindow, from_class):
 
     def btnClicked(self):
         self.led *= -1
-        # self.ser.write(f"{self.led}\n".encode())
-        # time.sleep(0.1)
-
-    # def updateSensor(self):
-    #     pass
-        # self.label.setText(self.ser.readline().decode())
 
 class iot_Thread(QThread):
     update = pyqtSignal()
