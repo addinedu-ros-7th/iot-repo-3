@@ -21,9 +21,9 @@ class MainWindow(QWidget):
         self.home_tab.setLayout(home_layout)
         
         # 두 번째 탭: 여러 개의 QPushButton 추가
-        self.cctv_tab = CCTVTab(r"C:\Users\pomel\ws\addinedu\team_iot\data")
+        self.cctv_tab = CCTVTab("2024-UI\data")
         
-        # 탭 위젯에 두 개의 탭 추가
+        # 탭 위젯에 두 개의 탭 추가s
         self.tab_widget.addTab(self.home_tab, "Home")
         self.tab_widget.addTab(self.cctv_tab, "CCTV")
         
