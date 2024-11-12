@@ -1,10 +1,14 @@
-from PySide6.QtCore import QThread, Signal, Qt
-from PySide6.QtGui import QImage, QPixmap
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
+from PyQt5.QtGui import QImage, QPixmap
+
+#from PySide6.QtCore import QThread, Signal, Qt
+#from PySide6.QtGui import QImage, QPixmap
 import cv2
 import time
 
 class Camera(QThread):
-    update = Signal()
+    #update = Signal()
+    update = pyqtSignal()
 
     def __init__(self, sec=0, parent=None):
         super().__init__()

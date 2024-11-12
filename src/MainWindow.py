@@ -1,6 +1,8 @@
 import os
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QTabWidget, QLabel, QVBoxLayout, QGridLayout, QPushButton, QComboBox
+#from PySide6.QtCore import Qt
+#from PySide6.QtWidgets import QWidget, QTabWidget, QLabel, QVBoxLayout, QGridLayout, QPushButton, QComboBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QTabWidget, QLabel, QVBoxLayout, QGridLayout, QPushButton, QComboBox
 import cv2
 from Camera import Camera
 from VideoPopup import VideoPopup
@@ -21,7 +23,7 @@ class MainWindow(QWidget):
         self.home_tab.setLayout(home_layout)
         
         # 두 번째 탭: 여러 개의 QPushButton 추가
-        self.cctv_tab = CCTVTab("2024-UI\data")
+        self.cctv_tab = CCTVTab("2024-UI/data")
         
         # 탭 위젯에 두 개의 탭 추가s
         self.tab_widget.addTab(self.home_tab, "Home")
