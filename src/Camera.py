@@ -15,6 +15,10 @@ class Camera(QThread):
         self.main = parent
         self.running = True
 
+        # cascade xml 파일 선택
+        self.body_cascade = cv2.CascadeClassifier('../data/haarcascade_fullbody.xml')
+        self.face_cascade = cv2.CascadeClassifier('../data/haarcascade_frontalface_default.xml')
+
     def run(self):
         while self.running:
             self.update.emit()  # 프레임 갱신 신호 발행
@@ -28,6 +32,18 @@ class Camera(QThread):
 
         if retval:
             self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+
+            # 10 = 검출한 사각형 사이 최소 간격, body에 x,y,w,h가 여러개 저장됨.
+            self.body = self.body_cascade.detectMultiScale(self.image, 1.1, 10, minSize=(20, 20))
+
+            for (x,y,w,h) in self.body :         
+                cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,0,255),3)
+
+            self.face = self.face_cascade.detectMultiScale(self.image, 1.1, 10, minSize=(20, 20))
+
+            for (x,y,w,h) in self.face :
+                cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,0,255),3)
+
             h, w, c = self.image.shape
             qimage = QImage(self.image.data, w, h, w * c, QImage.Format_RGB888)
             self.pixmap = QPixmap.fromImage(qimage)
