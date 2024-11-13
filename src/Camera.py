@@ -16,8 +16,8 @@ class Camera(QThread):
         self.running = True
 
         # cascade xml 파일 선택
-        self.body_cascade = cv2.CascadeClassifier('../data/haarcascade_fullbody.xml')
-        self.face_cascade = cv2.CascadeClassifier('../data/haarcascade_frontalface_default.xml')
+        self.body_cascade = cv2.CascadeClassifier('./data/haarcascade_fullbody.xml')
+        self.face_cascade = cv2.CascadeClassifier('./data/haarcascade_frontalface_default.xml')
 
     def run(self):
         while self.running:

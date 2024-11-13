@@ -30,23 +30,10 @@ class WindowClass(QMainWindow, from_class):
         self.camera = iot_Thread(self)
         self.camera.daemon = True 
         self.camera.update.connect(self.updateCamera)
-
-        # self.ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+        self.isConveyor = False
 
         self.btnLed.clicked.connect(self.btnClicked)
         self.btnCamera.clicked.connect(self.clickCamera)
-
-        # self.crossing_data = iot_Thread(self)
-        # self.crossing_data.daemon = True
-        # self.crossing_data.update.connect(self.updateData)
-        # self.crossing_data.start()
-
-        # self.ser.write(f"{self.led}\n".encode())
-
-        # self.camera = iot_Thread(self)
-        # self.camera.daemon = True
-        # self.camera.update.connect(self.updateCamera)
-        # self.btnCamera.clicked.connect(self.clickCamera)
 
         self.record = iot_Thread(self)
         self.record.daemon = True
@@ -67,6 +54,29 @@ class WindowClass(QMainWindow, from_class):
         self.conveyorControll.setGeometry(240, 0, 800, 700)
         self.conveyorMonitoring.setGeometry(240, 0, 800, 700)
 
+        self.conveyorStartButton.clicked.connect(self.startConveyor)
+        self.conveyorStopButton.clicked.connect(self.stopConveyor)
+
+        self.conveyorState = False
+        # self.updateConveyorStatusLabel()
+        self.SliderConveyorSpeed.valueChanged.connect(self.updateConveyorSpeedLabel)
+
+        # date timer 
+        self.updateDateTime()
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.updateDateTime)
+        self.timer.start(1000)
+
+        # Conveyor Window Slider Settings
+        self.SliderConveyorSpeed.setValue(10)
+        self.SliderConveyorSpeed.setMinimum(0)
+        self.SliderConveyorSpeed.setMaximum(100)
+        self.SliderConveyorSpeed.setSingleStep(10)
+
+        self.conveyorStatusTitle.setText("컨베이어 시스템 현황")
+        self.labelConveyorSpeed.setText("현재 속도: 10")
+
+
     def clickMonitoring(self):
         self.cctvControll.hide()
         self.conveyorControll.hide()
@@ -76,6 +86,51 @@ class WindowClass(QMainWindow, from_class):
         self.cctvControll.hide()
         self.conveyorControll.show()
         self.conveyorMonitoring.hide()
+
+    def startConveyor(self):
+        self.isCameraOn = True
+        self.isConveyor = True
+        self.conveyorState = True
+        self.cameraStart()
+
+        if self.isRecStart == False:
+            self.isRecStart = True
+            self.recordingStart()
+        
+        self.labelConveoyStatus.setText("True")
+        self.labelConveoyStatus.setStyleSheet("background-color: rgba(0, 255, 0, 128);") 
+
+    def stopConveyor(self):
+        self.isCameraOn = False
+        self.conveyorState = False
+        self.cameraStop()
+
+        if self.isRecStart == True:
+            self.isRecStart = False
+            self.recordingstop()
+        
+        self.labelConveoyStatus.setText("False")
+        self.labelConveoyStatus.setStyleSheet("background-color: rgba(255, 0, 0, 128);")  # 빨간색
+    
+    def updateConveyorSpeedLabel(self):
+        current_speed = self.SliderConveyorSpeed.value()
+        self.labelConveyorSpeed.setText(f"현재 속도: {current_speed}")
+
+    def updateDateTime(self):
+        now = datetime.datetime.now()
+        self.labelConveyorDate.setText(now.strftime("%Y-%m-%d"))
+        self.labelConveyorTime.setText(now.strftime("%H:%M:%S"))
+
+    # def updateConveyorStatusLabel(self):
+    #     if self.conveyorState:
+    #         self.labelConveoyStatus.setText("True")
+    #         self.labelConveoyStatus.setStyleSheet("background-color: rgba(0, 255, 0, 128);")  # 초록색
+    #     else:
+    #         self.labelConveoyStatus.setText("False")
+    #         self.labelConveoyStatus.setStyleSheet("background-color: rgba(255, 0, 0, 128);")  # 빨간색
+
+        # self.conveyorStartButton.clicked.connect(self.startConveyor)
+        # self.conveyorStopButton.clicked.connect(self.stopConveyor)
 
     def clickCCTV(self):
         self.cctvControll.show()
@@ -177,9 +232,14 @@ class WindowClass(QMainWindow, from_class):
             self.qimage = QImage(self.frame.data, w, h, w*c, QImage.Format_RGB888)
 
             self.pixmap = self.pixmap.fromImage(self.qimage)
-            self.pixmap = self.pixmap.scaled(self.printCamera.width(), self.printCamera.height())
+            # self.pixmap = self.pixmap.scaled(self.printCamera.width(), self.printCamera.height())
 
-            self.printCamera.setPixmap(self.pixmap)
+            if ( self.isConveyor == True ) :
+                self.pixmap = self.pixmap.scaled(self.labelConveyorCamera.width(), self.labelConveyorCamera.height())
+                self.labelConveyorCamera.setPixmap(self.pixmap)
+            else :
+                self.pixmap = self.pixmap.scaled(self.printCamera.width(), self.printCamera.height())
+                self.printCamera.setPixmap(self.pixmap)
 
     def updateData(self):
         if self.dataFlow == 1:
@@ -192,7 +252,6 @@ class WindowClass(QMainWindow, from_class):
         
         time.sleep(0.1)
         
-
     def btnClicked(self):
         self.led *= -1
 
@@ -205,7 +264,6 @@ class iot_Thread(QThread):
         self.running = True
 
     def run(self):
-        count = 0
         while self.running == True:
             self.update.emit()
             time.sleep(0.1)
