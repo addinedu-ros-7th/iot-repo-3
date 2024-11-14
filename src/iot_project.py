@@ -83,6 +83,18 @@ class WindowClass(QMainWindow, from_class):
         self.cameraStatus = True
         self.cameraStart()
 
+        self.activeBarcord()
+
+    def activeBarcord(self):
+        # 시리얼 포트와 속도 설정
+        self.serial_thread = SerialThread('/dev/ttyACM1', 9600)
+        self.serial_thread.data_received.connect(self.update_label)
+        self.serial_thread.start()  # 별도의 스레드에서 시리얼 통신 시작
+    
+    def update_label(self, data):
+        # 시리얼 데이터를 받으면 라벨을 업데이트
+        self.label.setText(f"Received: {data}")
+
     # visualization window functions
     def clickMonitoring(self):
         self.cctvControll.hide()
@@ -236,6 +248,21 @@ class WindowClass(QMainWindow, from_class):
             row = idx // 3
             col = idx % 3
             self.cctvLayout.addWidget(button, row, col)
+
+class SerialThread(QThread):
+    # 시리얼 데이터를 읽으면 이 시그널을 메인 스레드로 보냄
+    data_received = pyqtSignal(str)
+
+    def __init__(self, port, baudrate):
+        super().__init__()
+        self.ser = serial.Serial(port, baudrate, timeout=1)
+    
+    def run(self):
+        while True:
+            if self.ser.in_waiting > 0:
+                data = self.ser.readline().decode('utf-8').strip()
+                self.data_received.emit(data)  # 데이터를 메인 스레드로 보냄
+            time.sleep(0.1)
 
 class iot_Thread(QThread):
     update = pyqtSignal()
