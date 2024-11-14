@@ -139,7 +139,7 @@
      </font>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>barcodeLabel</string>
     </property>
    </widget>
   </widget>
