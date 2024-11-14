@@ -12,6 +12,7 @@ from matplotlib import pyplot as plt
 import os
 from VideoPopup import VideoPopup
 
+
 from_class = uic.loadUiType("./src/iot_project.ui")[0]
 
 class WindowClass(QMainWindow, from_class):
@@ -82,11 +83,13 @@ class WindowClass(QMainWindow, from_class):
         self.cameraStatus = True
         self.cameraStart()
 
+    # visualization window functions
     def clickMonitoring(self):
         self.cctvControll.hide()
         self.conveyorControll.hide()
         self.conveyorMonitoring.show()
-
+    
+    # conveyor controll window functions
     def clickControll(self):
         self.cctvControll.hide()
         self.conveyorControll.show()
