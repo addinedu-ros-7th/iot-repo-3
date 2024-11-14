@@ -93,7 +93,7 @@ class WindowClass(QMainWindow, from_class):
     
     def update_label(self, data):
         # 시리얼 데이터를 받으면 라벨을 업데이트
-        self.label.setText(f"Received: {data}")
+        self.barcodeLabel.setText(f"Received: {data}")
 
     # visualization window functions
     def clickMonitoring(self):
