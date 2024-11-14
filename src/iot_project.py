@@ -83,9 +83,43 @@ class WindowClass(QMainWindow, from_class):
         self.cameraStatus = True
         self.cameraStart()
 
-        self.activeBarcord()
+        # self.activeBarcord()
 
-        # style
+        self.pixmap1 = QPixmap()
+        self.pixmap2 = QPixmap()
+        self.pixmap3 = QPixmap()
+
+        self.insertChart()
+
+    def insertChart(self):
+        self.image1 = cv2.imread('./data/chart_1.jpeg')
+        self.image2 = cv2.imread('./data/chart_2.jpeg')
+        self.image3 = cv2.imread('./data/chart_3.jpeg')
+
+        # print("123", self.image2, "123")
+
+        self.image1 = cv2.cvtColor(self.image1, cv2.COLOR_BGR2RGB)
+        self.image2 = cv2.cvtColor(self.image2, cv2.COLOR_BGR2RGB)
+        self.image3 = cv2.cvtColor(self.image3, cv2.COLOR_BGR2RGB)
+
+        h, w, c, = self.image1.shape
+        self.qimage1 = QImage(self.image1.data, w, h, w*c, QImage.Format_RGB888)
+        self.pixmap1 = self.pixmap1.fromImage(self.qimage1)
+        self.pixmap1 = self.pixmap1.scaled(self.chartLabel_1.width(), self.chartLabel_1.height())
+        self.chartLabel_1.setPixmap(self.pixmap1)
+
+        h, w, c, = self.image2.shape
+        self.qimage2 = QImage(self.image2.data, w, h, w*c, QImage.Format_RGB888)
+        self.pixmap2 = self.pixmap2.fromImage(self.qimage2)
+        self.pixmap2 = self.pixmap2.scaled(self.chartLabel_2.width(), self.chartLabel_2.height())
+        self.chartLabel_2.setPixmap(self.pixmap2)
+
+        h, w, c, = self.image3.shape
+        self.qimage3 = QImage(self.image3.data, w, h, w*c, QImage.Format_RGB888)
+        self.pixmap3 = self.pixmap3.fromImage(self.qimage3)
+        self.pixmap3 = self.pixmap3.scaled(self.chartLabel_3.width(), self.chartLabel_3.height())
+        self.chartLabel_3.setPixmap(self.pixmap3)
+        
         self.listGroup.setStyleSheet("""
             QGroupBox {
                 background-color: #ADD8E6;  
@@ -116,7 +150,7 @@ class WindowClass(QMainWindow, from_class):
                 padding: 0 10px;
             }
         """)
-    
+
     def activeBarcord(self):
         # 시리얼 포트와 속도 설정
         self.serial_thread = SerialThread('/dev/ttyACM0', 9600)
@@ -158,6 +192,8 @@ class WindowClass(QMainWindow, from_class):
 
         self.btnMonitoring.setStyleSheet("background-color: #ADD8E6;") 
         self.btnCCTV.setStyleSheet("background-color: #ADD8E6;")
+    
+
 
     def startConveyor(self):
         # self.isCameraOn = True
