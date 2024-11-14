@@ -40,13 +40,13 @@ class WindowClass(QMainWindow, from_class):
         self.btnControll.clicked.connect(self.clickControll)
         self.btnCCTV.clicked.connect(self.clickCCTV)
 
+        self.mon_btn_state = False
+        self.con_btn_state = False
+        self.cct_btn_state = False
+
         self.cctvControll.hide()
         self.conveyorControll.hide()
         self.conveyorMonitoring.hide()
-
-        self.cctvControll.setGeometry(240, 0, 800, 700)
-        self.conveyorControll.setGeometry(240, 0, 800, 700)
-        self.conveyorMonitoring.setGeometry(240, 0, 800, 700)
 
         self.conveyorStartButton.clicked.connect(self.startConveyor)
         self.conveyorStopButton.clicked.connect(self.stopConveyor)
@@ -72,8 +72,8 @@ class WindowClass(QMainWindow, from_class):
         # cctv window
         self.video_folder_path = 'data'
         
-        self.cctvLayout.setContentsMargins(0, 0, 0, 0)
-        self.cctvLayout.setSpacing(5)
+        # self.cctvLayout.setContentsMargins(0, 0, 0, 0)
+        # self.cctvLayout.setSpacing(5)
         
         self.cctvOrderComboBox.addItems(["이름 오름차순", "이름 내림차순"])
         self.cctvOrderComboBox.setFixedWidth(150)  # 드롭다운 너비를 150으로 고정
@@ -85,9 +85,41 @@ class WindowClass(QMainWindow, from_class):
 
         self.activeBarcord()
 
+        # style
+        self.listGroup.setStyleSheet("""
+            QGroupBox {
+                background-color: #ADD8E6;  
+                border: none;
+                max-width: 220px;
+            }
+
+            QGroupBox::title {
+                color: #FFFFFF;              
+                background-color: #87CEFA;  
+                padding: 5px;               
+                text-align: center;
+            }
+            QLabel {
+                background-color: #ADD8E6;  
+                padding: 5px;               
+            }
+            QLabel:last-child {
+                background-color: #FFB6C1;  
+                color: #000000;            
+            }
+
+            QPushButton {
+                width: 220px;                 
+                height: 60px;                
+                border: none;                 
+                text-align: left;              
+                padding: 0 10px;
+            }
+        """)
+    
     def activeBarcord(self):
         # 시리얼 포트와 속도 설정
-        self.serial_thread = SerialThread('/dev/ttyACM1', 9600)
+        self.serial_thread = SerialThread('/dev/ttyACM0', 9600)
         self.serial_thread.data_received.connect(self.update_label)
         self.serial_thread.start()  # 별도의 스레드에서 시리얼 통신 시작
     
@@ -100,12 +132,32 @@ class WindowClass(QMainWindow, from_class):
         self.cctvControll.hide()
         self.conveyorControll.hide()
         self.conveyorMonitoring.show()
+
+        self.mon_btn_state = not self.mon_btn_state
+
+        if ( self.mon_btn_state == True ) :
+            self.btnMonitoring.setStyleSheet("background-color: #E5C9C9;")
+        else :
+            self.btnMonitoring.setStyleSheet("background-color: #ADD8E6;")
+
+        self.btnControll.setStyleSheet("background-color: #ADD8E6;")
+        self.btnCCTV.setStyleSheet("background-color: #ADD8E6;")
     
     # conveyor controll window functions
     def clickControll(self):
         self.cctvControll.hide()
         self.conveyorControll.show()
         self.conveyorMonitoring.hide()
+
+        self.con_btn_state = not self.con_btn_state
+
+        if ( self.con_btn_state == True ) :
+            self.btnControll.setStyleSheet("background-color: #E5C9C9;")
+        else :
+            self.btnControll.setStyleSheet("background-color: #ADD8E6;")
+
+        self.btnMonitoring.setStyleSheet("background-color: #ADD8E6;") 
+        self.btnCCTV.setStyleSheet("background-color: #ADD8E6;")
 
     def startConveyor(self):
         # self.isCameraOn = True
@@ -148,6 +200,16 @@ class WindowClass(QMainWindow, from_class):
         self.cctvControll.show()
         self.conveyorControll.hide()
         self.conveyorMonitoring.hide()
+
+        self.cct_btn_state = not self.cct_btn_state
+
+        if ( self.cct_btn_state == True ) :
+            self.btnCCTV.setStyleSheet("background-color: #E5C9C9;")
+        else :
+            self.btnCCTV.setStyleSheet("background-color: #ADD8E6;")
+
+        self.btnMonitoring.setStyleSheet("background-color: #ADD8E6;") 
+        self.btnControll.setStyleSheet("background-color: #ADD8E6;")
 
         self.video_files = [f for f in os.listdir(self.video_folder_path) if f.endswith(('.mp4', '.avi', '.mov'))]
         self.create_buttons(self.video_files)
@@ -233,6 +295,7 @@ class WindowClass(QMainWindow, from_class):
         self.popup.exec()
     
     def create_buttons(self, files):
+        
         # 기존 버튼 제거
         for i in reversed(range(self.cctvLayout.count())):
             widget = self.cctvLayout.itemAt(i).widget()
