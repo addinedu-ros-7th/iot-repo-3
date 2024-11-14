@@ -79,6 +79,8 @@ class WindowClass(QMainWindow, from_class):
         self.cctvOrderComboBox.setFixedHeight(30)
         self.cctvOrderComboBox.currentIndexChanged.connect(self.sort_buttons)
 
+        self.cameraStatus = True
+        self.cameraStart()
 
     def clickMonitoring(self):
         self.cctvControll.hide()
@@ -94,7 +96,11 @@ class WindowClass(QMainWindow, from_class):
         # self.isCameraOn = True
         self.isConveyor = True
         self.conveyorState = True
-        self.cameraStart()
+        
+        if self.cameraStatus == False:
+            self.cameraStart()
+        else :
+            pass
 
         if self.isRecStart == False:
             self.isRecStart = True
@@ -105,7 +111,7 @@ class WindowClass(QMainWindow, from_class):
 
     def stopConveyor(self):
         self.conveyorState = False
-        self.cameraStop()
+        # self.cameraStop()
 
         if self.isRecStart == True:
             self.isRecStart = False
@@ -186,12 +192,12 @@ class WindowClass(QMainWindow, from_class):
             self.pixmap = self.pixmap.fromImage(self.qimage)
             # self.pixmap = self.pixmap.scaled(self.printCamera.width(), self.printCamera.height())
 
-            if ( self.isConveyor == True ) :
+            if (self.isConveyor == True) :
                 self.pixmap = self.pixmap.scaled(self.labelConveyorCamera.width(), self.labelConveyorCamera.height())
                 self.labelConveyorCamera.setPixmap(self.pixmap)
             else :
-                self.pixmap = self.pixmap.scaled(self.printCamera.width(), self.printCamera.height())
-                self.printCamera.setPixmap(self.pixmap)
+                self.pixmap = self.pixmap.scaled(self.labelConveyorCamera.width(), self.labelConveyorCamera.height())
+                self.labelConveyorCamera.setPixmap(self.pixmap)
     
     # cctv window functions
     def sort_buttons(self):
