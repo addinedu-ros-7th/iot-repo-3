@@ -151,6 +151,10 @@ class WindowClass(QMainWindow, from_class):
             }
         """)
 
+        self.cctvControll.setGeometry(240, 0, 800, 700)
+        self.conveyorControll.setGeometry(240, 0, 800, 700)
+        self.conveyorMonitoring.setGeometry(240, 0, 800, 700)
+
     def activeBarcord(self):
         # 시리얼 포트와 속도 설정
         self.serial_thread = SerialThread('/dev/ttyACM0', 9600)

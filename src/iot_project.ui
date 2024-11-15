@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1290</width>
-    <height>840</height>
+    <width>1202</width>
+    <height>856</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,23 +18,20 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>220</width>
-     <height>861</height>
+     <width>231</width>
+     <height>701</height>
     </rect>
    </property>
    <property name="title">
-    <string/>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <string>Controller List</string>
    </property>
    <widget class="QPushButton" name="btnCCTV">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>280</y>
-      <width>220</width>
-      <height>60</height>
+      <x>10</x>
+      <y>260</y>
+      <width>161</width>
+      <height>71</height>
      </rect>
     </property>
     <property name="text">
@@ -44,10 +41,10 @@
    <widget class="QPushButton" name="btnControll">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>190</y>
-      <width>220</width>
-      <height>60</height>
+      <x>10</x>
+      <y>180</y>
+      <width>161</width>
+      <height>71</height>
      </rect>
     </property>
     <property name="text">
@@ -57,14 +54,11 @@
    <widget class="QPushButton" name="btnMonitoring">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>100</y>
-      <width>220</width>
-      <height>60</height>
+      <width>161</width>
+      <height>71</height>
      </rect>
-    </property>
-    <property name="accessibleDescription">
-     <string/>
     </property>
     <property name="text">
      <string>Conveyor Monitoring</string>
@@ -73,66 +67,44 @@
    <widget class="QLabel" name="lableKedex">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>30</y>
-      <width>220</width>
+      <width>211</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
      <string>Kedex Viewer</string>
     </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="cctvControll">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>0</y>
-     <width>1070</width>
-     <height>840</height>
+     <x>880</x>
+     <y>60</y>
+     <width>581</width>
+     <height>551</height>
     </rect>
    </property>
    <property name="title">
-    <string/>
+    <string>CCTV 보관실</string>
    </property>
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>90</y>
-      <width>991</width>
+      <width>561</width>
       <height>441</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="cctvLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-     <property name="leftMargin">
-      <number>50</number>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>50</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <property name="horizontalSpacing">
-      <number>6</number>
-     </property>
-    </layout>
+    <layout class="QGridLayout" name="cctvLayout"/>
    </widget>
    <widget class="QComboBox" name="cctvOrderComboBox">
     <property name="geometry">
      <rect>
-      <x>750</x>
+      <x>490</x>
       <y>60</y>
       <width>86</width>
       <height>25</height>
@@ -143,22 +115,22 @@
   <widget class="QGroupBox" name="conveyorMonitoring">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>0</y>
-     <width>1070</width>
-     <height>840</height>
+     <x>290</x>
+     <y>70</y>
+     <width>561</width>
+     <height>331</height>
     </rect>
    </property>
    <property name="title">
-    <string/>
+    <string>Conveyor Monitoring</string>
    </property>
    <widget class="QLabel" name="barcodeLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>30</y>
-      <width>481</width>
-      <height>251</height>
+      <width>541</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -213,14 +185,14 @@
   <widget class="QGroupBox" name="conveyorControll">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>0</y>
-     <width>1070</width>
-     <height>840</height>
+     <x>210</x>
+     <y>450</y>
+     <width>661</width>
+     <height>511</height>
     </rect>
    </property>
    <property name="title">
-    <string/>
+    <string>Conveyor Controller</string>
    </property>
    <widget class="QLabel" name="labelConveyorSpeed">
     <property name="geometry">
