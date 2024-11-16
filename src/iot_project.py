@@ -11,6 +11,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import os
 from VideoPopup import VideoPopup
+from database import *
 
 
 from_class = uic.loadUiType("./src/iot_project.ui")[0]
@@ -214,7 +215,9 @@ class WindowClass(QMainWindow, from_class):
             self.recordingStart()
         
         self.labelConveoyStatus.setText("True")
-        self.labelConveoyStatus.setStyleSheet("background-color: rgba(0, 255, 0, 128);") 
+        self.labelConveoyStatus.setStyleSheet("background-color: rgba(0, 255, 0, 128);")
+
+        excute_query("INSERT INTO conveyor values(now(),1);")
 
     def stopConveyor(self):
         self.conveyorState = False
@@ -226,7 +229,9 @@ class WindowClass(QMainWindow, from_class):
         
         self.labelConveoyStatus.setText("False")
         self.labelConveoyStatus.setStyleSheet("background-color: rgba(255, 0, 0, 128);")  # 빨간색
-    
+
+        excute_query("INSERT INTO conveyor values(now(),0);")
+
     def updateConveyorSpeedLabel(self):
         current_speed = self.SliderConveyorSpeed.value()
         self.labelConveyorSpeed.setText(f"현재 속도: {current_speed}")
