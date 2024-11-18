@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1202</width>
-    <height>856</height>
+    <width>886</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,8 +81,8 @@
   <widget class="QGroupBox" name="cctvControll">
    <property name="geometry">
     <rect>
-     <x>880</x>
-     <y>60</y>
+     <x>900</x>
+     <y>30</y>
      <width>581</width>
      <height>551</height>
     </rect>
@@ -115,10 +115,10 @@
   <widget class="QGroupBox" name="conveyorMonitoring">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>70</y>
-     <width>561</width>
-     <height>331</height>
+     <x>240</x>
+     <y>20</y>
+     <width>641</width>
+     <height>521</height>
     </rect>
    </property>
    <property name="title">
@@ -127,135 +127,28 @@
    <widget class="QLabel" name="barcodeLabel">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>541</width>
+      <x>430</x>
+      <y>240</y>
+      <width>201</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>18</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="text">
      <string>barcodeLabel</string>
     </property>
    </widget>
-   <widget class="QLabel" name="chartLabel_1">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>110</y>
-      <width>171</width>
-      <height>201</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>chartLabel_1</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="chartLabel_2">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>110</y>
-      <width>171</width>
-      <height>201</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>chartLabel_2</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="chartLabel_3">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>110</y>
-      <width>171</width>
-      <height>201</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>chartLabel_3</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="conveyorControll">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>450</y>
-     <width>661</width>
-     <height>511</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Conveyor Controller</string>
-   </property>
    <widget class="QLabel" name="labelConveyorSpeed">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>20</y>
+      <x>10</x>
+      <y>30</y>
       <width>271</width>
       <height>41</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Panel</enum>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QSlider" name="SliderConveyorSpeed">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>70</y>
-      <width>651</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="conveyorStartButton">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>90</y>
-      <width>181</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>conveyorStartButton</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="conveyorStopButton">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>90</y>
-      <width>181</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>conveyorStopButton</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelConveyorDate">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>90</y>
-      <width>231</width>
-      <height>71</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -268,42 +161,10 @@
    <widget class="QLabel" name="labelConveyorTime">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>180</y>
-      <width>231</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Panel</enum>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelConveyorCamera">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>260</y>
-      <width>371</width>
-      <height>241</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Panel</enum>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="conveyorStatusTitle">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>260</y>
-      <width>231</width>
-      <height>31</height>
+      <x>430</x>
+      <y>150</y>
+      <width>201</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -316,10 +177,10 @@
    <widget class="QLabel" name="labelConveoyStatus">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>300</y>
-      <width>231</width>
-      <height>201</height>
+      <x>430</x>
+      <y>320</y>
+      <width>201</width>
+      <height>191</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -327,6 +188,163 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="conveyorStatusTitle">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>200</y>
+      <width>201</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Panel</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelConveyorDate">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>100</y>
+      <width>201</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Panel</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="conveyorStartButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>201</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>conveyorStartButton</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="conveyorStopButton">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>100</y>
+      <width>201</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>conveyorStopButton</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelConveyorCamera">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>200</y>
+      <width>411</width>
+      <height>311</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Panel</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QSlider" name="SliderConveyorSpeed">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>621</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="receiveData">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>280</y>
+      <width>201</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>receiveData</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="conveyorControll">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>460</y>
+     <width>661</width>
+     <height>511</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Conveyor Statistics</string>
+   </property>
+   <widget class="QLabel" name="chartLabel_3">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>60</y>
+      <width>171</width>
+      <height>201</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>chartLabel_3</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="chartLabel_2">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>60</y>
+      <width>171</width>
+      <height>201</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>chartLabel_2</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="chartLabel_1">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>60</y>
+      <width>171</width>
+      <height>201</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>chartLabel_1</string>
     </property>
    </widget>
   </widget>
