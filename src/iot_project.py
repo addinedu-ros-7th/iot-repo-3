@@ -11,7 +11,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 import os
 from VideoPopup import VideoPopup
-from database import *
 
 
 from_class = uic.loadUiType("./src/iot_project.ui")[0]
@@ -82,15 +81,39 @@ class WindowClass(QMainWindow, from_class):
         self.cctvOrderComboBox.currentIndexChanged.connect(self.sort_buttons)
 
         self.cameraStatus = True
-        self.cameraStart()
+        # self.cameraStart()
 
-        # self.activeBarcord()
+        self.activeBarcode()
 
         self.pixmap1 = QPixmap()
         self.pixmap2 = QPixmap()
         self.pixmap3 = QPixmap()
 
         self.insertChart()
+
+        self.dataFlow = 1
+        self.dataList = []
+
+        self.barcodeData = ""
+        self.activeArduino()
+
+    def activeArduino(self):
+        # 시리얼 포트와 속도 설정
+        self.serial_thread = SerialThread1('/dev/ttyACM1', 115200)
+        self.serial_thread.data_received.connect(self.receivingData)
+        self.serial_thread.data_send.connect(self.sendData)
+        self.serial_thread.start()  # 별도의 스레드에서 시리얼 통신 시작
+
+    def sendData(self):
+        # self.barcodeData += "\n"sk 
+        self.serial_thread.send_data(self.barcodeData)
+        print("Barcode SendText")
+        self.barcodeLabel.setText(f"send: {self.barcodeData}")
+
+    def receivingData(self, data):
+        strData = str(data)
+        print("Barcode ReceiveText", strData)
+        self.receiveData.setText(f"Received: {strData}")
 
     def insertChart(self):
         self.image1 = cv2.imread('./data/chart_1.jpeg')
@@ -156,15 +179,23 @@ class WindowClass(QMainWindow, from_class):
         self.conveyorControll.setGeometry(240, 0, 800, 700)
         self.conveyorMonitoring.setGeometry(240, 0, 800, 700)
 
-    def activeBarcord(self):
+    def activeBarcode(self):
         # 시리얼 포트와 속도 설정
-        self.serial_thread = SerialThread('/dev/ttyACM0', 9600)
+        self.serial_thread = SerialThread2('/dev/ttyACM2', 9600)
+        print("\nBarcode on\n")
         self.serial_thread.data_received.connect(self.update_label)
         self.serial_thread.start()  # 별도의 스레드에서 시리얼 통신 시작
     
     def update_label(self, data):
         # 시리얼 데이터를 받으면 라벨을 업데이트
-        self.barcodeLabel.setText(f"Received: {data}")
+        self.barcodeData = data
+        # print("\nBarcode SetText\n")
+        # self.barcodeLabel.setText(f"Received: {data}")
+        # product_id = '1'
+        # product_name='test'
+        # data = 'test'
+        # category_id = excute_query(f"select * from category where category_name={data};")
+        # excute_query(f"insert into product values({product_id},{category_id},'{product_name}',now());")
 
     # visualization window functions
     def clickMonitoring(self):
@@ -197,8 +228,6 @@ class WindowClass(QMainWindow, from_class):
 
         self.btnMonitoring.setStyleSheet("background-color: #ADD8E6;") 
         self.btnCCTV.setStyleSheet("background-color: #ADD8E6;")
-    
-
 
     def startConveyor(self):
         # self.isCameraOn = True
@@ -215,9 +244,7 @@ class WindowClass(QMainWindow, from_class):
             self.recordingStart()
         
         self.labelConveoyStatus.setText("True")
-        self.labelConveoyStatus.setStyleSheet("background-color: rgba(0, 255, 0, 128);")
-
-        excute_query("INSERT INTO conveyor values(now(),1);")
+        self.labelConveoyStatus.setStyleSheet("background-color: rgba(0, 255, 0, 128);") 
 
     def stopConveyor(self):
         self.conveyorState = False
@@ -229,9 +256,7 @@ class WindowClass(QMainWindow, from_class):
         
         self.labelConveoyStatus.setText("False")
         self.labelConveoyStatus.setStyleSheet("background-color: rgba(255, 0, 0, 128);")  # 빨간색
-
-        excute_query("INSERT INTO conveyor values(now(),0);")
-
+    
     def updateConveyorSpeedLabel(self):
         current_speed = self.SliderConveyorSpeed.value()
         self.labelConveyorSpeed.setText(f"현재 속도: {current_speed}")
@@ -357,18 +382,45 @@ class WindowClass(QMainWindow, from_class):
             col = idx % 3
             self.cctvLayout.addWidget(button, row, col)
 
-class SerialThread(QThread):
+class SerialThread1(QThread):
     # 시리얼 데이터를 읽으면 이 시그널을 메인 스레드로 보냄
+    data_received = pyqtSignal(str)
+    data_send = pyqtSignal()
+
+    def __init__(self, port, baudrate):
+        super().__init__()
+        self.ser1 = serial.Serial(port, baudrate, timeout=1)
+        self.dataFlow = 1
+        
+    def run(self):
+        while True:
+            if self.dataFlow == 1:  
+                if self.ser1.in_waiting > 0:
+                    data = self.ser1.readline().decode('utf-8').strip()
+                    print(data)
+                    self.data_received.emit(data)  # 데이터를 메인 스레드로 보냄
+                    self.dataFlow *= -1
+            elif self.dataFlow == -1:
+                self.dataFlow *= -1
+                self.data_send.emit()  # 데이터를 메인 스레드로 보냄
+            time.sleep(0.1)
+
+    def send_data(self, data):
+        data = str(data)
+        self.ser1.write(f"{data}\n".encode())
+
+class SerialThread2(QThread):
+    # 시리얼 데이터를   읽으면 이 시그널을 메인 스레드로 보냄
     data_received = pyqtSignal(str)
 
     def __init__(self, port, baudrate):
         super().__init__()
-        self.ser = serial.Serial(port, baudrate, timeout=1)
+        self.ser2 = serial.Serial(port, baudrate, timeout=1)
     
     def run(self):
         while True:
-            if self.ser.in_waiting > 0:
-                data = self.ser.readline().decode('utf-8').strip()
+            if self.ser2.in_waiting > 0:
+                data = self.ser2.readline().decode('utf-8').strip()
                 self.data_received.emit(data)  # 데이터를 메인 스레드로 보냄
             time.sleep(0.1)
 
