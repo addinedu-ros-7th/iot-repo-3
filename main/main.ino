@@ -35,32 +35,32 @@ void setup() {
 void loop() {
     kedex.serialRead();
 
-    if (kedex.getKedexStatus() == 0) {
-        if (!kedex.product_queue.isEmpty()) {
-            kedex.setKedexStatus(1);
-        } else {
+    // if (kedex.getKedexStatus() == 0) {
+    //     if (!kedex.product_queue.isEmpty()) {
+    //         kedex.setKedexStatus(1);
+    //     } else {
 
-        }
-    } else if (kedex.getKedexStatus() == 1) {
-        if(kedex.detect()) {
-            // kedex.setStepperToPos();
-            kedex.waitingStartTime = millis();
-            kedex.setKedexStatus(2);
-        }
-    } else if (kedex.getKedexStatus() == 2) {
-        if (millis - kedex.waitingStartTime > 1000) {
-            kedex.kedexStepper.step(-1 * kedex.stepperPos);
-            kedex.setKedexStatus(3);
-        }
+    //     }
+    // } else if (kedex.getKedexStatus() == 1) {
+    //     if(kedex.detect()) {
+    //         // kedex.setStepperToPos();
+    //         kedex.waitingStartTime = millis();
+    //         kedex.setKedexStatus(2);
+    //     }
+    // } else if (kedex.getKedexStatus() == 2) {
+    //     if (millis - kedex.waitingStartTime > 1000) {
+    //         kedex.kedexStepper.step(-1 * kedex.stepperPos);
+    //         kedex.setKedexStatus(3);
+    //     }
 
-    } else if (kedex.getKedexStatus() == 3) {
-        if (kedex.product_queue.isEmpty()) {
-            kedex.setKedexStatus(0);
-        } else {
-            kedex.setKedexStatus(1);
-        }
-    }
-
+    // } else if (kedex.getKedexStatus() == 3) {
+    //     if (kedex.product_queue.isEmpty()) {
+    //         kedex.setKedexStatus(0);
+    //     } else {
+    //         kedex.setKedexStatus(1);
+    //     }
+    // }
+    // kedex.getKedexStatus()
     kedex.conveyorMove();
 
 }
