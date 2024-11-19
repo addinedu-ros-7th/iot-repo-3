@@ -14,8 +14,9 @@ public:
     int getProductID() { return productID; }
     int getCategoryID() { return categoryID; }
     void displayProductInfo() {
-        Serial.println("Product ID: " + String(productID));
-        Serial.println("Category ID: " + String(categoryID));
+        ;
+        // Serial.println("Product ID: " + String(productID));
+        // Serial.println("Category ID: " + String(categoryID));
     }
 };
 

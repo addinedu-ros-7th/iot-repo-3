@@ -13,14 +13,18 @@ const int IN4 = 5;
 
 
 
-KedexController kedex(STEP_N1,STEP_N2,STEP_N3,STEP_N4,DETECT_PIN,ENB,IN3,IN4);
+KedexController kedex(STEP_N1, STEP_N2, STEP_N3, STEP_N4, DETECT_PIN, ENB, IN3, IN4);
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     pinMode(DETECT_PIN, INPUT);
     pinMode(ENB, OUTPUT);
     pinMode(IN3, OUTPUT);
     pinMode(IN4, OUTPUT);
+
+    while (!Serial) {
+          ;  // 시리얼 포트가 열릴 때까지 대기
+    }
 }
 /* 0: waiting
    1: get signal
@@ -34,10 +38,12 @@ void loop() {
     if (kedex.getKedexStatus() == 0) {
         if (!kedex.product_queue.isEmpty()) {
             kedex.setKedexStatus(1);
+        } else {
+
         }
     } else if (kedex.getKedexStatus() == 1) {
         if(kedex.detect()) {
-            kedex.setStepperToPos();
+            // kedex.setStepperToPos();
             kedex.waitingStartTime = millis();
             kedex.setKedexStatus(2);
         }

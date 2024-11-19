@@ -21,7 +21,8 @@ String split(String &data, char seperator)
         data= "";
     }
     Serial.println(result);
-    Serial.println("---------------------------------");
+    // Serial.println("---------------------------------");
+    // 보내야 할 데이터 븐류코드|상품코크|각도
     return result;
 }
 
@@ -40,8 +41,7 @@ class KedexController {
     int conv_enb_pin;
     int conv_in3_pin;
     int conv_in4_pin;
-
-
+    Product temp;
 
     Stepper kedexStepper;
     Queue<Product> product_queue;
@@ -66,79 +66,79 @@ class KedexController {
 
 
     void serialRead() {
-        // 시리얼에서 값 읽어와서 int productID, String sku, String productName, destinationID 값 저장한 Product 객체 만들기
-        while (!Serial) {
-          ;  // 시리얼 포트가 열릴 때까지 대기
-        }
-        if (dataFlow == 1) {
-          while(Serial.available() > 0) {
-            dataFlow *= -1;
-            String tempString = Serial.readString();
-            tempString.trim();
-            int firstSpace = tempString.indexOf(' ');
-            inString = tempString.substring(0, firstSpace);
-            // 데이터를 받는 부분
-          }
-          if(inString != "") {
-            inString += "\n";
-          } else {
-            inString = "";
-          }
-        } else if (dataFlow == -1) {
+    // 시리얼에서 값 읽어와서 int productID, String sku, String productName, destinationID 값 저장한 Product 객체 만들기
+      if (dataFlow == 1) {
+        while(Serial.available() > 0) {
           dataFlow *= -1;
-          if(inString != "") {
-            Serial.print(inString);
-            // 데이터 보내는 부분
-            if (inString != "") {
-            int categoryID = split(inString, '|').toInt();
-            int productID = inString.toInt();
-
-            Product temp(productID, categoryID);
-            product_queue.enqueue(temp);
+          String tempString = Serial.readString();
+          tempString.trim();
+          int firstSpace = tempString.indexOf(' ');
+          inString = tempString.substring(0, firstSpace);
+          // 데이터를 받는 부분
         }
-          }
-          else {
-            Serial.println("None");
+        if(inString != "") {
+          inString += "\n";
+        } else {
+          inString = "";
+        }
+      } else if (dataFlow == -1) {
+        dataFlow *= -1;
+        if(inString != "") {
+          Serial.print(inString);
+          // 데이터 보내는 부분
+          if (inString != "") {
+              int categoryID = inString.substring(0, inString.indexOf("|")).toInt();
+              int productID = inString.substring(inString.indexOf("|"), inString.lastIndexOf()).toint();
+
+              temp(productID, categoryID);
+              product_queue.enqueue(temp);
           }
         }
+        else {
+          Serial.println("None");
+        }
+      }
+    }
 
-
+    void factoryFlow() {
+      if (categoryID != 0) && (productID != 0) {
+        setStepperToPos()
+      }
     }
 
     void setStepperToPos() {
-        Product temp;
-        product_queue.peek(temp);
-        if (temp.getCategoryID() == 1) {
-            stepperPos = 512;
-            kedexStepper.step(stepperPos);
-        } else if (temp.getCategoryID() == 3) {
-            stepperPos = -512;
-            kedexStepper.step(stepperPos);
-        }
+      product_queue.peek(temp);
+      if (temp.getCategoryID() == 1100000000) {
+        stepperPos = 512;
+        kedexStepper.step(stepperPos);
+      } else if (temp.getCategory == 2600000000) {
+        stepperPos = 0;
+        kedexStepper.step(stepperPos);
+      }
+      else if (temp.getCategoryID() == 4100000000) {
+        stepperPos = -512;
+        kedexStepper.step(stepperPos);
+      }
     }
 
     bool detect() {
-        if (digitalRead(detect_pin) == HIGH) {
-            Product temp;
-            product_queue.dequeue(temp);
-            //stepperPos = 0;
-            return true;
-        }
-        return false;
+      if (digitalRead(detect_pin) == HIGH) {
+        product_queue.dequeue(temp);
+        //stepperPos = 0;
+        return true;
+      }
+      return false;
     }
-
 
     void conveyorMove() {
-        if (kedexStatus != 0) {
-            digitalWrite(conv_in3_pin, HIGH); 
-            digitalWrite(conv_in4_pin, LOW); 
-            analogWrite(conv_enb_pin, 64); 
-        }
-        else {
-            analogWrite(conv_enb_pin, 0);
-        }
+      if (kedexStatus != 0) {
+        digitalWrite(conv_in3_pin, HIGH); 
+        digitalWrite(conv_in4_pin, LOW); 
+        analogWrite(conv_enb_pin, 64); 
     }
-    
+    else {
+        analogWrite(conv_enb_pin, 0);
+      }
+    }
 };
-
 #endif
