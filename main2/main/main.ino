@@ -1,7 +1,7 @@
 #include "Queue.h"
 #include "Product.h"
 #include <Stepper.h>
-#include "Serial.h"
+#include "Ser.h"
 
 const int STEP_N1 = 8;
 const int STEP_N2 = 9;
@@ -15,7 +15,7 @@ const int FRONT_DETECT_PIN = 12;
 Queue<Product> productQueue;
 
 // ---- Serial ---- 
-Serial serial;
+Ser ser;
 
 // ---- sorter ----
 int sorterStatus = 0;
@@ -47,11 +47,11 @@ void setup() {
 */
 void loop() {
 // -----------------
-    serial.serialRead();
-    if (serial.getCategoryID()) {
-        Serial.println(serial.getCategoryID());
+    ser.serialRead();
+    if (ser.getCategoryID()) {
+        Serial.println(ser.getCategoryID());
 
-        Product temp(serial.getProductID(), serial.getCategoryID());
+        Product temp(ser.getProductID(), ser.getCategoryID());
         productQueue.enqueue(temp);
 
         Product ptemp;
@@ -68,11 +68,11 @@ void loop() {
     } else if (sorterStatus == 1) {
         Product temp;
         productQueue.peek(temp);
-        if (temp.getCategoryID() == 1100000000) {
+        if (temp.getCategoryID() == "1100000000") {
             moveToPosition(256);
-        } else if (temp.getCategoryID() == 2600000000) {
+        } else if (temp.getCategoryID() == "2600000000") {
             moveToPosition(0);
-        } else if (temp.getCategoryID() == 4100000000) {
+        } else if (temp.getCategoryID() == "4100000000") {
             moveToPosition(-256);
         }
         sorterStatus = 2;

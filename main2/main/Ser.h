@@ -1,11 +1,11 @@
-class Serial {
+class Ser {
     int dataFlow;
     String inString;
     String categoryID;
     String productID;
 
 public:
-    Serial(): dataFlow(-1), inString(""), categoryID(""), productID("") {}
+    Ser(): dataFlow(-1), inString(""), categoryID(""), productID("") {}
 
     void serialRead() {
       if (dataFlow == 1) {
