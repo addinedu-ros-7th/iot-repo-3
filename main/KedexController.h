@@ -20,8 +20,6 @@ String split(String &data, char seperator)
         result = data;
         data= "";
     }
-    // Serial.println(result);
-    // Serial.println("---------------------------------");
     // 보내야 할 데이터 븐류코드|상품코크|각도
     return result;
 }
@@ -30,8 +28,7 @@ class KedexController {
   public:
     int kedexStatus;
     int stepperPos;
-    int dataFlow;
-    String inString = "";
+    int dataFlow = -1;
     unsigned long waitingStartTime;
     int step_n1_pin;
     int step_n2_pin;
@@ -41,8 +38,17 @@ class KedexController {
     int conv_enb_pin;
     int conv_in3_pin;
     int conv_in4_pin;
+    unsigned long conv_start_time = 0;
     String categoryID = "";
     String productID = "";
+    String inString = "";
+
+    const int STEP_N1 = 8;
+    const int STEP_N2 = 9;
+    const int STEP_N3 = 10;
+    const int STEP_N4 = 11;
+    const int DETECT_PIN = 13;
+    const int FRONT_DETECT_PIN = 12;
 
     Stepper kedexStepper;
     Queue<Product> product_queue;
@@ -56,11 +62,7 @@ class KedexController {
     conv_enb_pin(conv_enb_pin), conv_in3_pin(conv_in3_pin), conv_in4_pin(conv_in4_pin),
     kedexStepper(512,step_n4_pin,step_n2_pin,step_n3_pin,step_n1_pin),
     product_queue()
-    { kedexStepper.setSpeed(10); }
-
-    // KedexController(int stepperSpeed): 
-    // kedexStatus(0), stepperPos(0), front(0), end(0), kedexStepper(512,11,9,10,8)
-    // { kedexStepper.setSpeed(stepperSpeed); }
+    { kedexStepper.setSpeed(50); }
 
     int getKedexStatus() { return kedexStatus; }
     void setKedexStatus(int status) { kedexStatus = status; }
@@ -71,106 +73,116 @@ class KedexController {
     String getProductID() { return productID; }
     void setProductID(String productid) { productID = productid; }
 
+    unsigned long getConv_start_time() { return conv_start_time; }
+    void setConv_start_time(unsigned long temp) { conv_start_time = temp; }
+
+    int sorterStatus = 0;
+    int currStepperPos = 0;
+    int absStepperPos = 0;
+    unsigned long lastDetectTime = 0;
+    unsigned long sorterWaitTime = 0;
+
+    void moveToPosition(int absStepperPos) {
+        kedexStepper.step(absStepperPos - currStepperPos);
+        currStepperPos = absStepperPos;
+    }
+
+    void stepInit() {
+      kedexStepper.step(0);
+    }
+
+    bool barcodeStatus = LOW;
+    void setBarcodeAvail(bool status) {
+      // if(status == true) {
+
+      // } else {status == false) {
+        
+      // }
+      
+      barcodeStatus = status;
+    }
+
+    bool getBarcodeAvail() {
+      return barcodeStatus;
+    }
 
     void serialRead() {
     // 시리얼에서 값 읽어와서 int productID, String sku, String productName, destinationID 값 저장한 Product 객체 만들기
       if (dataFlow == 1) {
-        while(Serial.available() > 0) {
+        if(Serial.available() > 0) {
           dataFlow *= -1;
-          // String tempString = Serial.readString();
-          // tempString.trim();
-          // int firstSpace = tempString.indexOf(' ');
-          // inString = tempString.substring(0, firstSpace);
           inString = Serial.readString();
+          if(inString == "\n" || inString == "") {
+            inString = "";
+            // setBarcodeAvail(LOW);
+          } else {
+            String str1 = inString.substring(0, inString.indexOf("|"));
+            String str2 = inString.substring(inString.indexOf("|"), inString.length() - 1);
+            categoryID = str1;
+            productID = str2;
+            setBarcodeAvail(true);
+          }
           // 데이터를 받는 부분
         }
       } else if (dataFlow == -1) {
         dataFlow *= -1;
         if(inString != "") {
-          // 데이터 보내는 부분
-          if (inString != "") {
-              String str1 = inString.substring(0, inString.indexOf("|"));
-              // setCategoryID(str1.toInt());
-              categoryID = str1;
-              String str2 = (inString.substring(inString.indexOf("|"), inString.length() - 1));
-              // setProductID(str2.toInt());
-              productID = str2;
-
-              // Product temp(productID, categoryID);
-              // product_queue.enqueue(temp);
-
-              String str = String(getCategoryID());
-              // char* str = String(categoryID);
-              Serial.println(categoryID);
-              
-          }
+          String str = String(getCategoryID());
+          Serial.println(str);
+          // }
+        } else {
+          Serial.println("");
         }
-        else {
-          Serial.println("None");
-        }
-      }
-    }
-
-    void factoryFlow() {
-      if ((categoryID != 0) && (productID != 0)) {
-        setStepperToPos();
       }
     }
 
     void setStepperToPos() {
-      Product temp;
-      product_queue.peek(temp);
-      if (temp.getCategoryID() == 1100000000) {
-        stepperPos = 512;
-        kedexStepper.step(stepperPos);
-      } else if (temp.getCategoryID() == 2600000000) {
+      String str = String(getCategoryID());
+      if (str == "1100000000") {
+        stepperPos = 400;
+        moveToPosition(stepperPos);
+      } else if (str == "2600000000") {
         stepperPos = 0;
-        kedexStepper.step(stepperPos);
+        moveToPosition(stepperPos);
+      } else if (str == "4100000000") {
+        stepperPos = -400;
+        moveToPosition(stepperPos);
+      } else {
+        stepperPos = 0;
+        moveToPosition(stepperPos);
       }
-      else if (temp.getCategoryID() == 4100000000) {
-        stepperPos = -512;
-        kedexStepper.step(stepperPos);
-      }
+      // str = "";
+      // setBarcodeAvail(LOW);
     }
 
     bool detect() {
       if (digitalRead(detect_pin) == HIGH) {
-        Product temp;
-        product_queue.dequeue(temp);
-        //stepperPos = 0;
+        delay(125);
         return true;
       }
       return false;
     }
 
-    void conveyorMove() {
-      // if (kedexStatus != 0) {
-      //   digitalWrite(conv_in3_pin, HIGH); 
-      //   digitalWrite(conv_in4_pin, LOW); 4
-      //   analogWrite(conv_enb_pin, 64); 
-      // }
-      // else {
-      //     analogWrite(conv_enb_pin, 0);
-      // }
+    int temp = 0;
+    void resetFlags() {
+      temp = 0;
+    }
 
-      // Product temp;
-      // product_queue.peek(temp);
-      // product_queue.dequeue(temp);
-      String str = String(getCategoryID());
-      if (str == "1100000000") {
-        digitalWrite(conv_in3_pin, HIGH); 
-        digitalWrite(conv_in4_pin, LOW); 
-        analogWrite(conv_enb_pin, 64);
-      } else if (str == "2600000000") {
-        digitalWrite(conv_in3_pin, LOW); 
-        digitalWrite(conv_in4_pin, HIGH); 
-        analogWrite(conv_enb_pin, 64);
+    void conveyorMove() {
+      int status = kedexStatus;
+      digitalWrite(conv_in3_pin, LOW); 
+      digitalWrite(conv_in4_pin, HIGH);
+
+      if (temp == 0) {
+        analogWrite(conv_enb_pin, 150);
+        delay(1300);
+        analogWrite(conv_enb_pin, 80);
+        delay(300);
+        temp = 1;
       }
-      else if (str == "4100000000") {
-        digitalWrite(conv_in3_pin, LOW); 
-        digitalWrite(conv_in4_pin, LOW); 
-        analogWrite(conv_enb_pin, 0);
-      }
+      // analogWrite(conv_enb_pin, 80);
+
+      analogWrite(conv_enb_pin, 0);
     }
 };
 #endif
