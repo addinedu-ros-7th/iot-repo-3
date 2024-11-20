@@ -19,7 +19,9 @@ class WindowClass(QMainWindow, from_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-
+        self.arduinoPort = '/dev/ttyACM2'
+        self.barcodePort = '/dev/ttyACM0'
+        # self.cameraPort = 'dev/ttyACM1'
         self.pixmap = QPixmap()
 
         # cascade xml 파일 선택
@@ -81,7 +83,7 @@ class WindowClass(QMainWindow, from_class):
         self.cctvOrderComboBox.currentIndexChanged.connect(self.sort_buttons)
 
         self.cameraStatus = True
-        # self.cameraStart()
+        self.cameraStart()
 
         self.activeBarcode()
 
@@ -99,7 +101,7 @@ class WindowClass(QMainWindow, from_class):
 
     def activeArduino(self):
         # 시리얼 포트와 속도 설정
-        self.serial_thread = SerialThread1('/dev/ttyACM1', 115200)
+        self.serial_thread = SerialThread1(self.arduinoPort, 115200)
         self.serial_thread.data_received.connect(self.receivingData)
         self.serial_thread.data_send.connect(self.sendData)
         self.serial_thread.start()  # 별도의 스레드에서 시리얼 통신 시작
@@ -181,7 +183,7 @@ class WindowClass(QMainWindow, from_class):
 
     def activeBarcode(self):
         # 시리얼 포트와 속도 설정
-        self.serial_thread = SerialThread2('/dev/ttyACM2', 9600)
+        self.serial_thread = SerialThread2(self.barcodePort, 9600)
         print("\nBarcode on\n")
         self.serial_thread.data_received.connect(self.update_label)
         self.serial_thread.start()  # 별도의 스레드에서 시리얼 통신 시작
@@ -406,6 +408,9 @@ class SerialThread1(QThread):
             time.sleep(0.1)
 
     def send_data(self, data):
+        # if data == "":
+            
+        # else :
         data = str(data)
         self.ser1.write(f"{data}\n".encode())
 
