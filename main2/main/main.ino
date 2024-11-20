@@ -9,13 +9,16 @@ const int STEP_N3 = 10;
 const int STEP_N4 = 11;
 const int DETECT_PIN = 13;
 const int FRONT_DETECT_PIN = 12;
-// const int ENB = 6;
-// const int IN3 = 4;
-// const int IN4 = 5;
+
+const int ENB = 6;
+const int IN3 = 4;
+const int IN4 = 5;
+
 Queue<Product> productQueue;
 
 // ---- Serial ---- 
 Ser ser;
+
 
 // ---- sorter ----
 int sorterStatus = 0;
@@ -34,11 +37,15 @@ void moveToPosition(int absStepperPos) {
 void setup() {
     delay(2000);
     Serial.begin(115200);
-    Serial.println("Setup started.");
+    //Serial.println("Setup started.");
     stepper.setSpeed(10);
     pinMode(DETECT_PIN, INPUT);
     pinMode(FRONT_DETECT_PIN, INPUT);
-    Serial.println("Setup finished.");
+
+    pinMode(ENB, OUTPUT);
+    pinMode(IN3, OUTPUT);
+    pinMode(IN4, OUTPUT);
+    //Serial.println("Setup finished.");
 }
 /* 0: waiting
    1: get signal
@@ -49,15 +56,27 @@ void loop() {
 // -----------------
     ser.serialRead();
     if (ser.getCategoryID()) {
-        Serial.println(ser.getCategoryID());
+        // Serial.println(ser.getCategoryID());
 
         Product temp(ser.getProductID(), ser.getCategoryID());
         productQueue.enqueue(temp);
 
-        Product ptemp;
-        productQueue.peek(ptemp);
-        ptemp.displayProductInfo();
+        // Product ptemp;
+        // productQueue.peek(ptemp);
+        // ptemp.displayProductInfo();
     }
+
+    if (!productQueue.isEmpty()) {
+        digitalWrite(IN3, HIGH); 
+        digitalWrite(IN4, LOW); 
+        analogWrite(ENB, 64); 
+    } else {
+        digitalWrite(IN3, LOW); 
+        digitalWrite(IN4, LOW); 
+        analogWrite(ENB, 0); 
+    }
+
+
     
 // ------------------
     // 컨베이어 하부 Sorting
